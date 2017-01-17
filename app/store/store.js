@@ -12,8 +12,10 @@ export default new Vuex.Store({
 		isAuth: false,
 		self: {},
 		users: [],
-      selectedVideo: null,
-		searchVideos: []
+      selectedVideo: {},
+      searchVideos: [],
+      playlistVideo: {},
+      playlist: []
 	},
 	mutations: {
 		LOGIN_SUCCESS(state, user) {
@@ -34,14 +36,17 @@ export default new Vuex.Store({
       SEARCH_VIDEO_ERROR(state, videos) {
 			console.log('SEARCH VIDEO ERROR');
 		},
-      SELECT_VIDEO(state, id) {
+      SELECT_VIDEO(state, video) {
          console.log('SELECT_VIDEO');
-         var filteredArray = state.searchVideos.filter(video => video.id === id);
-         var selectedVideo = (filteredArray.length)
-            ? filteredArray[0]
-            : null;
-
-         state.selectedVideo = selectedVideo;
+         state.selectedVideo = video;
+      },
+      PLAYLIST_ADD(state, video) {
+         console.log('PLAYLIST_ADD');
+         state.playlist.push(video);
+      },
+      PLAYLIST_NEXT(state) {
+         console.log('PLAYLIST_NEXT');
+         state.playlistVideo = state.playlist.shift();
       }
 	},
 	actions: {

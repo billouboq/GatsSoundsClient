@@ -1,12 +1,14 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueMaterial from 'vue-material';
+import VueYouTubeEmbed from 'vue-youtube-embed'
 import store from './store/store';
 import routes from './routes';
 import {authMiddleware} from './services/auth';
 
 // init all the things
 Vue.use(VueRouter);
+Vue.use(VueYouTubeEmbed)
 Vue.use(VueMaterial.MdCore);
 Vue.use(VueMaterial.MdCard);
 Vue.use(VueMaterial.MdMenu);

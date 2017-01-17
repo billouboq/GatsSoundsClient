@@ -9,9 +9,12 @@
 
    <div class="content">
       <videoList :videos="videos"></videoList>
+      <videoList :videos="playlist"></videoList>
    </div>
 
-   <videoModal v-if="selectedVideo" :video="selectedVideo"></videoModal>
+   <youtube class="youtube-video" v-show="playlistVideo.id" :video-id="playlistVideo.id"></youtube>
+   <youtube class="youtube-video" v-show="selectedVideo.id" :video-id="selectedVideo.id"></youtube>
+   <!--<videoModal v-if="selectedVideo" :video="selectedVideo"></videoModal>-->
 </div>
 </template>
 y
@@ -32,6 +35,12 @@ export default {
       videos() {
          return this.$store.state.searchVideos;
       },
+      playlist() {
+         return this.$store.state.playlist;
+      },
+      playlistVideo() {
+         return this.$store.state.playlistVideo;
+      }
    },
    methods: {
       research() {
@@ -58,5 +67,12 @@ export default {
 }
 .content {
    padding: 20px;
+}
+.youtube-video {
+   position: fixed;
+   bottom: 25px;
+   left: 25px;
+   width: 40%;
+   z-index: 500;
 }
 </style>

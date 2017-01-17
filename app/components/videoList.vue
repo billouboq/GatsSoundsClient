@@ -13,12 +13,12 @@
             </md-button>
 
             <md-menu-content>
-               <md-menu-item @click="selectVideo(video.id)">
+               <md-menu-item @click="selectVideo(video)">
                   <span>Call</span>
                   <md-icon>phone</md-icon>
                </md-menu-item>
 
-               <md-menu-item>
+               <md-menu-item @click="addToPlaylist(video)">
                   <span>Send a message</span>
                   <md-icon>message</md-icon>
                </md-menu-item>
@@ -37,11 +37,12 @@
 export default {
    props: ['videos'],
    methods: {
-      selectVideo(id) {
-         if (id) {
-            this.$store.commit('SELECT_VIDEO', id);
-         }
+      selectVideo(video) {
+         this.$store.commit('SELECT_VIDEO', video);
       },
+      addToPlaylist(video) {
+         this.$store.commit('PLAYLIST_ADD', video);
+      }
    }
 }
 </script>
