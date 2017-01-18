@@ -2,18 +2,25 @@
 
 import store from './store/store';
 import Signin from './routes/signin.vue'
+import Signup from './routes/signup.vue'
 import Dashboard from './routes/dashboard.vue'
 
 export default [
    {
       path: '/',
-      redirect: 'dashboard'
+      redirect: 'signin'
    },
-   /*{
+   {
       path: '/signin',
       name: 'signin',
       component: Signin
    },
+   {
+      path: '/signup',
+      name: 'signup',
+      component: Signup
+   },
+   /*
    {
       path: '/logout',
       name: 'logout',

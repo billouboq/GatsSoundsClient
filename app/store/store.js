@@ -50,34 +50,29 @@ export default new Vuex.Store({
       }
 	},
 	actions: {
+      SIGNUP({commit}, data) {
+			return fetch('signup', {
+				method: 'post',
+				body: JSON.stringify(data)
+			}).then(response => {
+				console.log('signup success');
+			}).catch(err => {
+				console.log('signup error');
+				throw err;
+			});
+		},
 		LOGIN({commit}, data) {
 			return fetch('signin', {
 				method: 'post',
 				body: JSON.stringify(data)
 			}).then(response => {
 				console.log('login success');
-				window.localStorage.setItem('gats', response.token);
+				// window.localStorage.setItem('gats', response.token);
 				commit('LOGIN_SUCCESS', response.user);
 			}).catch(err => {
 				console.log('login error');
 				commit('LOGIN_ERROR');
-				Promise.reject(err);
-			});
-		},
-		VERIFY({commit}) {
-			return fetch('verify', {
-				method: 'get',
-				headers: new Headers({
-					'Authorization': window.localStorage.getItem('gats')
-				})
-			}).then(response => {
-				console.log('verify success');
-				console.log(response);
-				commit('LOGIN_SUCCESS', response);
-			}).catch(err => {
-				console.log('verify error');
-				commit('LOGIN_ERROR');
-				Promise.reject(err);
+            throw err;
 			});
 		},
 		SEARCH_VIDEO({commit}, query) {
@@ -87,6 +82,7 @@ export default new Vuex.Store({
             })
             .catch(err => {
                commit('SEARCH VIDEO ERROR');
+               throw err;
             });
 		}
 	},

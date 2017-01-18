@@ -1,8 +1,5 @@
 <template>
-<md-whiteframe class="signin" md-elevation="2">
-   <!--<div class="logo-container">
-         <img class="logo" src="assets/images/logo.png" alt="">
-      </div>-->
+<md-whiteframe class="signup" md-elevation="2">
    <div class="form-container">
       <md-input-container>
          <label>Adresse email :</label>
@@ -12,13 +9,17 @@
          <label>Mot de passe :</label>
          <md-input type="password" v-model="password"></md-input>
       </md-input-container>
-      <md-button class="md-raised md-primary" @click="login()">Se connecter</md-button>
+      <md-input-container>
+         <label>Mot de passe :</label>
+         <md-input type="password" v-model="repassword"></md-input>
+      </md-input-container>
+      <md-button class="md-raised md-primary" @click="signup()">S'inscrire'</md-button>
    </div>
 </md-whiteframe>
 </template>
 
 <style lang="scss">
-.signin {
+.signup {
     display: flex;
     position: absolute;
     top: 50%;
@@ -29,17 +30,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-}
-
-.logo-container {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.logo {
-    width: 135px;
 }
 
 .form-container {
@@ -60,18 +50,20 @@ export default {
       return {
          email: '',
          password: '',
+         repassword: ''
       }
    },
    methods: {
-      login() {
-         if (this.password && this.email) {
+      signup() {
+         if (this.password && this.email && this.repassword) {
 
             const data = {
                email: this.email,
-               password: this.password
+               password: this.password,
+               repassword: this.repassword
             };
 
-            this.$store.dispatch('LOGIN', data)
+            this.$store.dispatch('SIGNUP', data)
                .then(response => {
                   this.$router.push('dashboard');
                })
