@@ -49,11 +49,6 @@ module.exports = {
       historyApiFallback: true,
       noInfo: true
    },
-   plugins: [
-      new webpack.ProvidePlugin({
-         fetch: 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch'
-      })
-   ],
    devtool: '#eval-source-map'
 };
 
