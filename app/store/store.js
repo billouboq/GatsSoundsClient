@@ -9,11 +9,19 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state: {
+      // auth
 		isAuth: false,
-		self: {},
-		users: [],
-      selectedVideo: {},
+
+      // search
       searchVideos: [],
+      searchQuery: '',
+      searchNextPageToken: '',
+      searchLoading: false,
+
+      // video
+      selectedVideo: {},
+
+      // playlist
       playlistVideo: {},
       playlist: []
 	},
@@ -29,12 +37,29 @@ export default new Vuex.Store({
 			state.self = null;
 			state.isAuth = false;
 		},
-		SEARCH_VIDEO_SUCCESS(state, videos) {
+      SEARCH_LOADING(state) {
+         state.searchLoading = true;
+      },
+		SEARCH_VIDEO_SUCCESS(state, {query, nextPageToken, videos}) {
 			console.log('SEARCH VIDEO SUCCESS');
+         state.searchNextPageToken = nextPageToken;
+         state.searchQuery = query;
          state.searchVideos = videos;
+         state.searchLoading = false;
 		},
-      SEARCH_VIDEO_ERROR(state, videos) {
-			console.log('SEARCH VIDEO ERROR');
+      SEARCH_VIDEO_ERROR(state) {
+         console.log('SEARCH VIDEO ERROR');
+         state.searchLoading = false;
+      },
+      SEARCH_NEXT_VIDEO_SUCCESS(state, {nextPageToken, videos}) {
+         console.log('SEARCH NEXT VIDEO SUCCESS');
+         state.searchNextPageToken = nextPageToken;
+         videos.forEach(video => state.searchVideos.push(video));
+         state.searchLoading = false;
+		},
+      SEARCH_NEXT_VIDEO_ERROR(state) {
+         state.searchLoading = false;
+         console.log('SEARCH NEXT VIDEO ERROR');
 		},
       SELECT_VIDEO(state, video) {
          console.log('SELECT_VIDEO');
@@ -76,14 +101,34 @@ export default new Vuex.Store({
 			});
 		},
 		SEARCH_VIDEO({commit}, query) {
+         commit('SEARCH_LOADING');
          return youtube.listVideo(query)
-            .then(videos => {
-               commit('SEARCH_VIDEO_SUCCESS', videos);
+            .then(data => {
+               commit('SEARCH_VIDEO_SUCCESS', {
+                  query: query,
+                  nextPageToken: data.nextPageToken,
+                  videos: data.items,
+               });
             })
             .catch(err => {
                commit('SEARCH VIDEO ERROR');
                throw err;
             });
-		}
+		},
+      SEARCH_NEXT_VIDEO({commit, state}) {
+         commit('SEARCH_LOADING');
+         return youtube.listNextVideo(state.searchQuery, state.searchNextPageToken)
+            .then(data => {
+               console.log(data);
+               commit('SEARCH_NEXT_VIDEO_SUCCESS', {
+                  nextPageToken: data.nextPageToken,
+                  videos: data.items,
+               });
+            })
+            .catch(err => {
+               commit('SEARCH_NEXT_VIDEO_SUCCESS');
+               throw err;
+            });
+		},
 	},
 })

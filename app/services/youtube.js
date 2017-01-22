@@ -2,17 +2,32 @@
 
 import config from '../config';
 import fetch from './fetch';
+
 const google = config.google;
 const apiKey = `&key=${google.key}`;
 
 export default {
-	listVideo
+	listVideo,
+   listNextVideo
 }
 
 function listVideo(query, limit = 10) {
 
 	const url = `${google.url}search/?maxResults=${limit}&type=video&part=id&q=${query}${apiKey}`;
 
+	return fetch(url)
+		.then(getVideoData)
+		.then(getChannelData)
+		.then(format)
+		.catch(err => {
+			console.log(err);
+		});
+}
+
+function listNextVideo(query, next, limit = 10) {
+
+	const url = `${google.url}search/?pageToken=${next}&maxResults=${limit}&type=video&part=id&q=${query}${apiKey}`;
+   console.log(url);
 	return fetch(url)
 		.then(getVideoData)
 		.then(getChannelData)
@@ -29,10 +44,10 @@ function getVideoData(data) {
 	const url = `${google.url}videos/?id=${ids}&part=snippet,contentDetails${apiKey}`;
 
 	return fetch(url)
-		.then(getChannelData)
-		.catch(err => {
-			console.log(err);
-		});
+      .then(response => {
+         data.items = response.items;
+         return data;
+      });
 }
 
 function getChannelData(data) {
@@ -54,12 +69,12 @@ function getChannelData(data) {
 }
 
 function format(data) {
-	return data.items.map((item, index) => {
+	data.items = data.items.map((item, index) => {
 		return {
 			id: item.id,
 			type: 'youtube',
 			title: item.snippet.title,
-			// url: item.link,
+			url: item.link,
 			description: item.snippet.description,
 			date: item.snippet.publishedAt,
 			duration: YTDurationToSeconds(item.contentDetails.duration),
@@ -74,6 +89,7 @@ function format(data) {
 			}
 		}
 	});
+   return data;
 }
 
 function YTDurationToSeconds(duration) {

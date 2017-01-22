@@ -6,11 +6,6 @@ export default {
    },
    video : {
      limit: 10,
-     types: {
-        YOUTUBE: 1,
-        DAILYMOTION: 2,
-        VIMEO: 3
-     }
    },
    google: {
      key: 'AIzaSyAeD194OlWhlVT6ksW-lRw7HdQpH-LID8A',

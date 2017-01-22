@@ -1,5 +1,9 @@
 <template>
-<div class="videoList">
+<div class="videoList"
+   v-infinite-scroll="getMoreVideos"
+   infinite-scroll-disabled="searchLoading"
+   infinite-scroll-distance="200"
+   infinite-scroll-immediate-check="false">
    <md-card class="video" v-for="video of videos">
       <md-card-header>
          <md-card-header-text>
@@ -14,14 +18,10 @@
 
             <md-menu-content>
                <md-menu-item @click="selectVideo(video)">
-                  <span>Call</span>
-                  <md-icon>phone</md-icon>
+                  <span>Add to playlist</span>
+                  <md-icon>library_add</md-icon>
                </md-menu-item>
 
-               <md-menu-item @click="addToPlaylist(video)">
-                  <span>Send a message</span>
-                  <md-icon>message</md-icon>
-               </md-menu-item>
             </md-menu-content>
          </md-menu>
       </md-card-header>
@@ -30,19 +30,28 @@
          <img v-bind:src="video.thumbnail.medium">
       </md-card-media>
    </md-card>
+   <div class="loader" v-show="searchLoading"></div>
 </div>
 </template>
 
 <script>
 export default {
    props: ['videos'],
+   computed: {
+      searchLoading() {
+         return this.$store.state.searchLoading;
+      }
+   },
    methods: {
+      getMoreVideos() {
+         this.$store.dispatch('SEARCH_NEXT_VIDEO');
+      },
       selectVideo(video) {
          this.$store.commit('SELECT_VIDEO', video);
       },
       addToPlaylist(video) {
          this.$store.commit('PLAYLIST_ADD', video);
-      }
+      },
    }
 }
 </script>
@@ -55,7 +64,21 @@ export default {
    flex-wrap: wrap;
 }
 .video {
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
    margin-bottom: 20px;
    width: 49%;
+}
+.md-card .md-title {
+   font-size: 22px;
+   line-height: 1.05;
+}
+.loader {
+   margin: 40px auto;
+   width: 60px;
+   height: 60px;
+   background: url('../../assets/images/ring-alt.svg') center no-repeat;
+   background-size: contain;
 }
 </style>
