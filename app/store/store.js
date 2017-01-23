@@ -4,6 +4,9 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import fetch from '../services/fetch';
 import youtube from '../services/youtube';
+import {client} from '../services/socket';
+
+console.log(client);
 
 Vue.use(Vuex);
 
@@ -26,10 +29,8 @@ export default new Vuex.Store({
       playlist: []
 	},
 	mutations: {
-		LOGIN_SUCCESS(state, user) {
+		LOGIN_SUCCESS(state) {
 			console.log('LOGIN SUCCESS');
-			console.log(user);
-			state.self = user;
 			state.isAuth = true;
 		},
 		LOGIN_ERROR(state) {
@@ -80,21 +81,28 @@ export default new Vuex.Store({
 				method: 'post',
 				body: JSON.stringify(data)
 			}).then(response => {
+            console.log(response);
 				console.log('signup success');
 			}).catch(err => {
+            console.log(err);
 				console.log('signup error');
 				throw err;
 			});
 		},
 		LOGIN({commit}, data) {
+         console.log(data);
 			return fetch('signin', {
 				method: 'post',
 				body: JSON.stringify(data)
-			}).then(response => {
+			}).then(token => {
+            return client.connection(token)
+         }).then(response => {
+            console.log(response);
 				console.log('login success');
 				// window.localStorage.setItem('gats', response.token);
-				commit('LOGIN_SUCCESS', response.user);
+				commit('LOGIN_SUCCESS');
 			}).catch(err => {
+            console.log(err);
 				console.log('login error');
 				commit('LOGIN_ERROR');
             throw err;
@@ -119,7 +127,6 @@ export default new Vuex.Store({
          commit('SEARCH_LOADING');
          return youtube.listNextVideo(state.searchQuery, state.searchNextPageToken)
             .then(data => {
-               console.log(data);
                commit('SEARCH_NEXT_VIDEO_SUCCESS', {
                   nextPageToken: data.nextPageToken,
                   videos: data.items,

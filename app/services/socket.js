@@ -12,6 +12,7 @@ export class socketClient {
    }
 
    connection(jwt) {
+      console.log(this);
       // connect to server
       const tick = io(this.url, {
          forceNew: true,
@@ -23,9 +24,9 @@ export class socketClient {
          tick.emit('authenticate', {token: jwt}) ;
 
          // if user is authenticated
-         tick.on('authenticated', (token) => {
+         tick.on('authenticated', () => {
             this.socket = tick;
-            resolve(token);
+            resolve();
          });
 
          // if user is unauthorized

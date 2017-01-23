@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueMaterial from 'vue-material';
+import 'vue-material/dist/vue-material.css';
 import VueYouTubeEmbed from 'vue-youtube-embed';
 import infiniteScroll from 'vue-infinite-scroll';
 import {VueSocket} from './services/socket';
