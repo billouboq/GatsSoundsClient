@@ -32,7 +32,8 @@ const router = new VueRouter({
    routes: routes,
 });
 
-// router.beforeEach(authMiddleware);
+// authentification route middleware
+router.beforeEach(authMiddleware);
 
 // mount a root Vue instance
 new Vue({

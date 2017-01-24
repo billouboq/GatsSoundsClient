@@ -35,7 +35,7 @@ export default {
                password: this.password
             };
 
-            this.$store.dispatch('LOGIN', data)
+            this.$store.dispatch('SIGNIN', data)
                .then(response => {
                   this.$router.push('dashboard');
                })

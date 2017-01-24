@@ -5,8 +5,7 @@ import Vuex from 'vuex';
 import fetch from '../services/fetch';
 import youtube from '../services/youtube';
 import {client} from '../services/socket';
-
-console.log(client);
+import {storeToken} from '../services/auth';
 
 Vue.use(Vuex);
 
@@ -14,6 +13,7 @@ export default new Vuex.Store({
 	state: {
       // auth
 		isAuth: false,
+      self: {},
 
       // search
       searchVideos: [],
@@ -29,9 +29,10 @@ export default new Vuex.Store({
       playlist: []
 	},
 	mutations: {
-		LOGIN_SUCCESS(state) {
+		LOGIN_SUCCESS(state, user) {
 			console.log('LOGIN SUCCESS');
 			state.isAuth = true;
+         state.self = user;
 		},
 		LOGIN_ERROR(state) {
 			console.log('LOGIN ERROR');
@@ -80,30 +81,33 @@ export default new Vuex.Store({
 			return fetch('signup', {
 				method: 'post',
 				body: JSON.stringify(data)
-			}).then(response => {
-            console.log(response);
+			}).then(token => {
+            return client.connection(token)
+         }).then(data => {
+            console.log(data);
+            storeToken(data.token);
+            commit('LOGIN_SUCCESS', data.user);
 				console.log('signup success');
 			}).catch(err => {
             console.log(err);
 				console.log('signup error');
+            commit('LOGIN_ERROR');
 				throw err;
 			});
 		},
-		LOGIN({commit}, data) {
-         console.log(data);
+		SIGNIN({commit}, data) {
 			return fetch('signin', {
 				method: 'post',
 				body: JSON.stringify(data)
 			}).then(token => {
             return client.connection(token)
          }).then(response => {
-            console.log(response);
-				console.log('login success');
-				// window.localStorage.setItem('gats', response.token);
-				commit('LOGIN_SUCCESS');
+            storeToken(data.token);
+				console.log('signin success');
+				commit('LOGIN_SUCCESS', data.user);
 			}).catch(err => {
             console.log(err);
-				console.log('login error');
+				console.log('signin error');
 				commit('LOGIN_ERROR');
             throw err;
 			});
