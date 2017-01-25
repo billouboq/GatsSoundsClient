@@ -1,11 +1,6 @@
 <template>
 <div class="dashboard">
-   <md-toolbar>
-      <md-input-container>
-         <md-icon>search</md-icon>
-         <input type="text" v-model="searchQuery" @keyup.enter="research()"></input>
-      </md-input-container>
-   </md-toolbar>
+   <searchBar></searchBar>
 
    <div class="content">
       <videoList :videos="videos"></videoList>
@@ -14,18 +9,19 @@
 
    <!--<youtube class="youtube-video" v-show="playlistVideo.id" :video-id="playlistVideo.id"></youtube>-->
    <youtube class="youtube-video" v-show="selectedVideo.id" :video-id="selectedVideo.id"></youtube>
+   <md-bottom-bar class="bottom-bar" md-shift>
+     <md-bottom-bar-item md-icon="video_library">Playlist</md-bottom-bar-item>
+     <md-bottom-bar-item md-icon="search">Search</md-bottom-bar-item>
+     <md-bottom-bar-item md-icon="starts" md-active>Favorites</md-bottom-bar-item>
+   </md-bottom-bar>
 </div>
 </template>
 
 <script>
+import searchBar from '../components/searchBar.vue';
 import videoList from '../components/videoList.vue';
 
 export default {
-   data() {
-      return {
-         searchQuery: ''
-      }
-   },
    computed: {
       selectedVideo() {
          return this.$store.state.selectedVideo;
@@ -40,39 +36,48 @@ export default {
          return this.$store.state.playlistVideo;
       },
    },
-   methods: {
-      research() {
-         if (this.searchQuery) {
-            this.$store.dispatch('SEARCH_VIDEO', this.searchQuery);
-         }
-      },
-   },
    mounted() {
       this.$socket.emit('test');
    },
    components: {
       videoList,
+      searchBar,
    },
 }
 </script>
 
 <style lang="scss">
-.content,
+@import "~sass/variables.scss";
+
 .dashboard {
-    width: 100%;
-    height: 100%;
-}
-.dashboard {
-   position: relative;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 .content {
-   padding: 20px;
+   position: absolute;
+   top: $searchBarHeight + px;
+   left: 0;
+   right: 0;
+   min-height: 100%;
+   background-color: $backgroundColor;
+   padding: #{$padding}px #{$padding}px #{$bottomBarHeight + $padding}px #{$padding}px;
 }
 .youtube-video {
    position: fixed;
    bottom: 25px;
    left: 25px;
    width: 40%;
+   z-index: 500;
+}
+.bottom-bar {
+   position: fixed;
+   bottom: 0;
+   z-index: 500;
+}
+.toolbar {
    z-index: 500;
 }
 </style>

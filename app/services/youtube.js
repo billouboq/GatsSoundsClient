@@ -11,7 +11,7 @@ export default {
    listNextVideo
 }
 
-function listVideo(query, limit = 10) {
+function listVideo(query, limit = config.video.limit) {
 	const url = `${google.url}search/?maxResults=${limit}&type=video&part=id&q=${query}${apiKey}`;
 	return fetch(url)
 		.then(getVideoData)
@@ -20,7 +20,7 @@ function listVideo(query, limit = 10) {
 		.catch(onError);
 }
 
-function listNextVideo(query, next, limit = 10) {
+function listNextVideo(query, next, limit = config.video.limit) {
 	const url = `${google.url}search/?pageToken=${next}&maxResults=${limit}&type=video&part=id&q=${query}${apiKey}`;
 	return fetch(url)
 		.then(getVideoData)

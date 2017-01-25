@@ -6,7 +6,7 @@ export default {
       url: 'http://127.0.0.1:1234/'
    },
    video : {
-     limit: 10,
+     limit: 9,
    },
    google: {
      key: 'AIzaSyAeD194OlWhlVT6ksW-lRw7HdQpH-LID8A',

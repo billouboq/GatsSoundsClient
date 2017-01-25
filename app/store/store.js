@@ -54,6 +54,7 @@ export default new Vuex.Store({
       SEARCH_VIDEO_ERROR(state) {
          console.log('SEARCH VIDEO ERROR');
          state.searchLoading = false;
+         state.searchNextPageToken = '';
       },
       SEARCH_NEXT_VIDEO_SUCCESS(state, {nextPageToken, videos}) {
          console.log('SEARCH NEXT VIDEO SUCCESS');
@@ -62,8 +63,9 @@ export default new Vuex.Store({
          state.searchLoading = false;
 		},
       SEARCH_NEXT_VIDEO_ERROR(state) {
-         state.searchLoading = false;
          console.log('SEARCH NEXT VIDEO ERROR');
+         state.searchLoading = false;
+         state.searchNextPageToken = '';
 		},
       SELECT_VIDEO(state, video) {
          console.log('SELECT_VIDEO');
@@ -80,7 +82,7 @@ export default new Vuex.Store({
 	},
 	actions: {
       SIGNUP({commit}, data) {
-			return fetch('signup', {
+			return fetch('login/signup', {
 				method: 'post',
 				body: JSON.stringify(data)
 			}).then(token => {
@@ -97,7 +99,7 @@ export default new Vuex.Store({
 			});
 		},
 		SIGNIN({commit}, data) {
-			return fetch('signin', {
+			return fetch('login/signin', {
 				method: 'post',
 				body: JSON.stringify(data)
 			}).then(token => {
@@ -116,11 +118,15 @@ export default new Vuex.Store({
          commit('SEARCH_LOADING');
          return youtube.listVideo(query)
             .then(data => {
-               commit('SEARCH_VIDEO_SUCCESS', {
-                  query: query,
-                  nextPageToken: data.nextPageToken,
-                  videos: data.items,
-               });
+               if (data.items && data.items.length) {
+                  commit('SEARCH_VIDEO_SUCCESS', {
+                     query: query,
+                     nextPageToken: data.nextPageToken,
+                     videos: data.items,
+                  });
+               } else {
+                  commit('SEARCH VIDEO ERROR');
+               }
             })
             .catch(err => {
                commit('SEARCH VIDEO ERROR');
@@ -131,13 +137,17 @@ export default new Vuex.Store({
          commit('SEARCH_LOADING');
          return youtube.listNextVideo(state.searchQuery, state.searchNextPageToken)
             .then(data => {
-               commit('SEARCH_NEXT_VIDEO_SUCCESS', {
-                  nextPageToken: data.nextPageToken,
-                  videos: data.items,
-               });
+               if (data.items && data.items.length) {
+                  commit('SEARCH_NEXT_VIDEO_SUCCESS', {
+                     nextPageToken: data.nextPageToken,
+                     videos: data.items,
+                  });
+               } else {
+                  commit('SEARCH_NEXT_VIDEO_ERROR');
+               }
             })
             .catch(err => {
-               commit('SEARCH_NEXT_VIDEO_SUCCESS');
+               commit('SEARCH_NEXT_VIDEO_ERROR');
                throw err;
             });
 		},

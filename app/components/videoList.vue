@@ -2,7 +2,7 @@
 <div class="videoList"
    v-infinite-scroll="getMoreVideos"
    infinite-scroll-disabled="searchLoading"
-   infinite-scroll-distance="200"
+   infinite-scroll-distance="550"
    infinite-scroll-immediate-check="false">
    <md-card class="video" v-for="video of videos">
       <md-card-header>
@@ -20,6 +20,10 @@
                <md-menu-item @click="selectVideo(video)">
                   <span>Add to playlist</span>
                   <md-icon>library_add</md-icon>
+               </md-menu-item>
+               <md-menu-item @click="selectVideo(video)">
+                  <span>Add to favorite</span>
+                  <md-icon>star</md-icon>
                </md-menu-item>
 
             </md-menu-content>
@@ -68,7 +72,7 @@ export default {
    flex-direction: column;
    justify-content: space-between;
    margin-bottom: 20px;
-   width: 49%;
+   width: 32.5%;
 }
 .md-card .md-title {
    font-size: 22px;

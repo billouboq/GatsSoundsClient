@@ -25,6 +25,7 @@ Vue.use(VueMaterial.MdToolbar);
 Vue.use(VueMaterial.MdSidenav);
 Vue.use(VueMaterial.MdList);
 Vue.use(VueMaterial.MdBackdrop);
+Vue.use(VueMaterial.MdBottomBar);
 
 // config routes
 const router = new VueRouter({
