@@ -7,7 +7,7 @@ import infiniteScroll from 'vue-infinite-scroll';
 import {VueSocket} from './services/socket';
 import store from './store/store';
 import routes from './routes';
-import {authMiddleware} from './services/auth';
+import authMiddleware from './services/auth';
 
 // init all the things
 Vue.use(VueRouter);

@@ -20,22 +20,19 @@ export default [
       name: 'signup',
       component: Signup
    },
-   /*
    {
       path: '/logout',
       name: 'logout',
+      meta: {auth: true},
       beforeEnter(to, from, next) {
          store.commit('LOGIN_ERROR');
-         window.localStorage.removeItem('gats');
          next('signin');
       }
-   },*/
+   },
    {
       path: '/dashboard',
       name: 'dashboard',
       component: Dashboard,
-      /*meta: {
-         auth: true
-      }*/
+      meta: {auth: true}
    }
 ]

@@ -4,8 +4,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import fetch from '../services/fetch';
 import youtube from '../services/youtube';
+import config from '../config';
 import {client} from '../services/socket';
-import {storeToken} from '../services/auth';
 
 Vue.use(Vuex);
 
@@ -29,13 +29,15 @@ export default new Vuex.Store({
       playlist: []
 	},
 	mutations: {
-		LOGIN_SUCCESS(state, user) {
+		LOGIN_SUCCESS(state, {user, token}) {
 			console.log('LOGIN SUCCESS');
+         window.localStorage.setItem(config.token, token);
 			state.isAuth = true;
          state.self = user;
 		},
 		LOGIN_ERROR(state) {
 			console.log('LOGIN ERROR');
+         window.localStorage.removeItem(config.token);
 			state.self = null;
 			state.isAuth = false;
 		},
@@ -85,8 +87,7 @@ export default new Vuex.Store({
             return client.connection(token)
          }).then(data => {
             console.log(data);
-            storeToken(data.token);
-            commit('LOGIN_SUCCESS', data.user);
+            commit('LOGIN_SUCCESS', data);
 				console.log('signup success');
 			}).catch(err => {
             console.log(err);
@@ -101,10 +102,9 @@ export default new Vuex.Store({
 				body: JSON.stringify(data)
 			}).then(token => {
             return client.connection(token)
-         }).then(response => {
-            storeToken(data.token);
+         }).then(data => {
 				console.log('signin success');
-				commit('LOGIN_SUCCESS', data.user);
+				commit('LOGIN_SUCCESS', data);
 			}).catch(err => {
             console.log(err);
 				console.log('signin error');

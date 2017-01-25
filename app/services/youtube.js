@@ -12,29 +12,21 @@ export default {
 }
 
 function listVideo(query, limit = 10) {
-
 	const url = `${google.url}search/?maxResults=${limit}&type=video&part=id&q=${query}${apiKey}`;
-
 	return fetch(url)
 		.then(getVideoData)
 		.then(getChannelData)
 		.then(format)
-		.catch(err => {
-			console.log(err);
-		});
+		.catch(err => throw err);
 }
 
 function listNextVideo(query, next, limit = 10) {
-
 	const url = `${google.url}search/?pageToken=${next}&maxResults=${limit}&type=video&part=id&q=${query}${apiKey}`;
-   console.log(url);
 	return fetch(url)
 		.then(getVideoData)
 		.then(getChannelData)
 		.then(format)
-		.catch(err => {
-			console.log(err);
-		});
+		.catch(err => throw err);
 }
 
 function getVideoData(data) {
@@ -62,10 +54,7 @@ function getChannelData(data) {
 			});
 			return data;
 		})
-		.catch(err => {
-			console.log(err);
-		});
-
+		.catch(err => throw err);
 }
 
 function format(data) {
