@@ -17,7 +17,7 @@ function listVideo(query, limit = 10) {
 		.then(getVideoData)
 		.then(getChannelData)
 		.then(format)
-		.catch(err => throw err);
+		.catch(onError);
 }
 
 function listNextVideo(query, next, limit = 10) {
@@ -26,7 +26,7 @@ function listNextVideo(query, next, limit = 10) {
 		.then(getVideoData)
 		.then(getChannelData)
 		.then(format)
-		.catch(err => throw err);
+		.catch(onError);
 }
 
 function getVideoData(data) {
@@ -54,7 +54,7 @@ function getChannelData(data) {
 			});
 			return data;
 		})
-		.catch(err => throw err);
+		.catch(onError);
 }
 
 function format(data) {
@@ -87,4 +87,8 @@ function YTDurationToSeconds(duration) {
 	const minutes = (parseInt(match[2]) || 0);
 	const seconds = (parseInt(match[3]) || 0);
 	return hours * 3600 + minutes * 60 + seconds;
+}
+
+function onError(err) {
+   throw err;
 }

@@ -47,6 +47,9 @@ export default {
          }
       },
    },
+   mounted() {
+      this.$socket.emit('test');
+   },
    components: {
       videoList,
    },
