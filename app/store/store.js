@@ -56,6 +56,13 @@ export default new Vuex.Store({
          state.searchLoading = false;
          state.searchNextPageToken = '';
       },
+		SEARCH_VIDEO_RESET(state) {
+         console.log('SEARCH VIDEO ERROR');
+         state.searchVideos = [];
+	      state.searchQuery = '';
+	      state.searchNextPageToken = '';
+	      state.searchLoading = false;
+      },
       SEARCH_NEXT_VIDEO_SUCCESS(state, {nextPageToken, videos}) {
          console.log('SEARCH NEXT VIDEO SUCCESS');
          state.searchNextPageToken = nextPageToken;
@@ -74,10 +81,15 @@ export default new Vuex.Store({
       PLAYLIST_ADD(state, video) {
          console.log('PLAYLIST_ADD');
          state.playlist.push(video);
+         // no video in playlist
+         if (!state.playlistVideo.id) {
+            console.log('in playlistvideo');
+            state.playlistVideo = video;
+         }
       },
       PLAYLIST_NEXT(state) {
          console.log('PLAYLIST_NEXT');
-         state.playlistVideo = state.playlist.shift();
+         state.playlistVideo = state.playlist[state.playlist.length - 1];
       }
 	},
 	actions: {
@@ -134,22 +146,32 @@ export default new Vuex.Store({
             });
 		},
       SEARCH_NEXT_VIDEO({commit, state}) {
-         commit('SEARCH_LOADING');
-         return youtube.listNextVideo(state.searchQuery, state.searchNextPageToken)
-            .then(data => {
-               if (data.items && data.items.length) {
-                  commit('SEARCH_NEXT_VIDEO_SUCCESS', {
-                     nextPageToken: data.nextPageToken,
-                     videos: data.items,
-                  });
-               } else {
+         return new Promise((resolve, reject) => {
+            if (!state.searchNextPageToken) {
+               return reject();
+            }
+            commit('SEARCH_LOADING');
+            return youtube.listNextVideo(state.searchQuery, state.searchNextPageToken)
+               .then(data => {
+                  if (data.items && data.items.length) {
+                     commit('SEARCH_NEXT_VIDEO_SUCCESS', {
+                        nextPageToken: data.nextPageToken,
+                        videos: data.items,
+                     });
+                  } else {
+                     commit('SEARCH_NEXT_VIDEO_ERROR');
+                  }
+               })
+               .catch(err => {
                   commit('SEARCH_NEXT_VIDEO_ERROR');
-               }
-            })
-            .catch(err => {
-               commit('SEARCH_NEXT_VIDEO_ERROR');
-               throw err;
-            });
+                  throw err;
+               });
+         });
+		},
+      ADD_TO_PLAYLIST({commit, state}, video) {
+         console.log('ADD TO PLAYLIST');
+         console.log(video)
+         client.socket.emit('addToPlaylist', video);
 		},
 	},
 })

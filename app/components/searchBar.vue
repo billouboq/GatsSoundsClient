@@ -23,7 +23,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "~sass/variables.scss";
 
 .search-bar {
@@ -32,7 +32,7 @@ export default {
    left: 0;
    right: 0;
    padding: 0 $padding + px;
-   height: $searchBarHeight + px;
+   height: $barHeight + px;
    display: flex;
    align-items: center;
    background-color: white;

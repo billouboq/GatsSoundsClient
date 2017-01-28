@@ -17,7 +17,7 @@
          <md-input type="password" v-model="repassword"></md-input>
       </md-input-container>
       <md-button class="md-raised md-primary" @click="signup()">S'inscrire</md-button>
-      <router-link class="link" to="signin">Se connecter</router-link>
+      <router-link class="link" to="/signin">Se connecter</router-link>
    </div>
 </md-whiteframe>
 </template>
@@ -55,7 +55,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .signup {
     display: flex;
     position: absolute;

@@ -12,13 +12,13 @@ export default function authMiddleware(to, from, next) {
             next();
          })
          .catch(() => {
-            next('signin');
+            next('/signin');
          })
    // don't need auth
    } else {
       checkIfIsAuth()
          .then(() => {
-            next('dashboard');
+            next('/dashboard/search');
          })
          .catch(() => {
             next();
@@ -39,13 +39,12 @@ function checkIfIsAuth() {
             client.connection(jwtToken)
                // jwt is ok
                .then(data => {
-                  console.log(data);
                   store.commit('LOGIN_SUCCESS', data);
                   resolve();
                })
                // jwt not ok
                .catch(err => {
-                  store.commit('LOGIN_ERROR', data);
+                  store.commit('LOGIN_ERROR');
                   reject();
                });
          // no jwt token

@@ -47,7 +47,7 @@ module.exports = {
    resolve: {
       alias: {
          'vue$': 'vue/dist/vue.common.js',
-         'sass': path.resolve(__dirname, './app/sass/')
+         'sass': path.resolve(__dirname, './app/sass/'),
       },
    },
    devServer: {

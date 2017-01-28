@@ -1,9 +1,8 @@
 <template>
-<div class="videoList"
-   v-infinite-scroll="getMoreVideos"
-   infinite-scroll-disabled="searchLoading"
-   infinite-scroll-distance="550"
-   infinite-scroll-immediate-check="false">
+<div class="videoList" v-infinite-scroll="getMoreVideos"
+     infinite-scroll-disabled="searchLoading"
+     infinite-scroll-distance="800"
+     infinite-scroll-immediate-check="false">
    <md-card class="video" v-for="video of videos">
       <md-card-header>
          <md-card-header-text>
@@ -17,11 +16,11 @@
             </md-button>
 
             <md-menu-content>
-               <md-menu-item @click="selectVideo(video)">
+               <md-menu-item @click="addToPlaylist(video)">
                   <span>Add to playlist</span>
                   <md-icon>library_add</md-icon>
                </md-menu-item>
-               <md-menu-item @click="selectVideo(video)">
+               <md-menu-item @click="addToFavorite(video)">
                   <span>Add to favorite</span>
                   <md-icon>star</md-icon>
                </md-menu-item>
@@ -40,27 +39,34 @@
 
 <script>
 export default {
-   props: ['videos'],
    computed: {
       searchLoading() {
          return this.$store.state.searchLoading;
-      }
+      },
+      videos() {
+         return this.$store.state.searchVideos;
+      },
    },
    methods: {
       getMoreVideos() {
          this.$store.dispatch('SEARCH_NEXT_VIDEO');
       },
-      selectVideo(video) {
+      addToFavorite(video) {
          this.$store.commit('SELECT_VIDEO', video);
       },
       addToPlaylist(video) {
-         this.$store.commit('PLAYLIST_ADD', video);
+         this.$store.dispatch('ADD_TO_PLAYLIST', video);
       },
-   }
+   },
+   beforeRouteLeave (to, from, next) {
+      console.log('in before leave');
+      this.$store.commit('SEARCH_VIDEO_RESET');
+      next();
+   },
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .videoList {
    width: 100%;
    display: flex;
@@ -82,7 +88,7 @@ export default {
    margin: 40px auto;
    width: 60px;
    height: 60px;
-   background: url('../../assets/images/ring-alt.svg') center no-repeat;
+   background: url('../../../assets/images/ring-alt.svg') center no-repeat;
    background-size: contain;
 }
 </style>

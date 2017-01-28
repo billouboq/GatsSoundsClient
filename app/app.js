@@ -21,14 +21,13 @@ Vue.use(VueMaterial.MdWhiteframe);
 Vue.use(VueMaterial.MdInputContainer);
 Vue.use(VueMaterial.MdButton);
 Vue.use(VueMaterial.MdIcon);
-Vue.use(VueMaterial.MdToolbar);
-Vue.use(VueMaterial.MdSidenav);
 Vue.use(VueMaterial.MdList);
 Vue.use(VueMaterial.MdBackdrop);
 Vue.use(VueMaterial.MdBottomBar);
 
 // config routes
 const router = new VueRouter({
+   base: __dirname,
    mode: 'history',
    routes: routes,
 });

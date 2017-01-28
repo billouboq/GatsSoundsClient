@@ -15,7 +15,11 @@ export class socketClient {
       // connect to server
       const tick = io(this.url, {
          forceNew: true,
-         transports: ['websocket']
+         timeout: 5000,
+         reconnectionAttempts: 20,
+         reconnectionDelay: 2000,
+         reconnectionDelayMax: 4000,
+         transports: ['websocket'],
       });
 
       return new Promise((resolve, reject) => {
@@ -23,13 +27,16 @@ export class socketClient {
          tick.emit('authenticate', {token}) ;
 
          // if user is authenticated
-         tick.on('authenticated', (user) => {
+         tick.once('authenticated', (user) => {
             this.socket = tick;
             resolve({token, user});
          });
 
          // if user is unauthorized
-         tick.on('unauthorized', reject);
+         tick.once('unauthorized', reject);
+
+         // if connection failed
+         tick.once('connect_error', reject);
       });
    }
 }

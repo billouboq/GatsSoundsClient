@@ -13,7 +13,7 @@
          <md-input type="password" v-model="password"></md-input>
       </md-input-container>
       <md-button class="md-raised md-primary" @click="login()">Se connecter</md-button>
-      <router-link class="link" to="signup">Créer son compte</router-link>
+      <router-link class="link" to="/signup">Créer son compte</router-link>
    </div>
 </md-whiteframe>
 </template>
@@ -49,7 +49,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .signin {
     display: flex;
     position: absolute;

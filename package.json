@@ -7,11 +7,11 @@
     "start": "electron .",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --inline --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "build:osx": "electron-packager . trisomie21 --platform=darwin --arch=x64 --version=1.4.11 --app-bundle-id=com.trisomie21 --app-version=1.0.0 --build-version=1.0.100",
-    "build:win": "electron-packager . trisomie21 --platform=win32 --arch=x64 --version=1.4.11 --app-bundle-id=com.trisomie21 --app-version=1.0.0 --build-version=1.0.100"
+    "build:osx": "electron-packager . trisomie21 --platform=darwin --arch=x64 --version=1.4.15 --app-bundle-id=com.trisomie21 --app-version=1.0.0 --build-version=1.0.100",
+    "build:win": "electron-packager . trisomie21 --platform=win32 --arch=x64 --version=1.4.15 --app-bundle-id=com.trisomie21 --app-version=1.0.0 --build-version=1.0.100"
   },
   "dependencies": {
-    "electron": "^1.4.1",
+    "electron": "1.4.15",
     "socket.io-client": "^1.7.2",
     "vue": "^2.1.0",
     "vue-infinite-scroll": "^2.0.0",
