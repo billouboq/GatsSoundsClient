@@ -61,9 +61,7 @@ function format(data) {
 	data.items = data.items.map((item, index) => {
 		return {
 			id: item.id,
-			type: 'youtube',
 			title: item.snippet.title,
-			url: item.link,
 			description: item.snippet.description,
 			date: item.snippet.publishedAt,
 			duration: YTDurationToSeconds(item.contentDetails.duration),

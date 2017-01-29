@@ -52,7 +52,7 @@ export default {
          this.$store.dispatch('SEARCH_NEXT_VIDEO');
       },
       addToFavorite(video) {
-         this.$store.commit('SELECT_VIDEO', video);
+         this.$store.dispatch('ADD_TO_FAVORITES', video);
       },
       addToPlaylist(video) {
          this.$store.dispatch('ADD_TO_PLAYLIST', video);

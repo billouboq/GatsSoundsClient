@@ -12,6 +12,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
 	state: {
       // auth
+      token: '',
 		isAuth: false,
       self: {},
 
@@ -26,19 +27,24 @@ export default new Vuex.Store({
 
       // playlist
       playlistVideo: {},
-      playlist: []
+      playlist: [],
+
+		// favorites
+		favorites: []
 	},
 	mutations: {
 		LOGIN_SUCCESS(state, {user, token}) {
 			console.log('LOGIN SUCCESS');
          window.localStorage.setItem(config.token, token);
+         state.token = token;
 			state.isAuth = true;
          state.self = user;
 		},
 		LOGIN_ERROR(state) {
 			console.log('LOGIN ERROR');
          window.localStorage.removeItem(config.token);
-			state.self = null;
+         state.token = '';
+			state.self = {};
 			state.isAuth = false;
 		},
       SEARCH_LOADING(state) {
@@ -90,7 +96,11 @@ export default new Vuex.Store({
       PLAYLIST_NEXT(state) {
          console.log('PLAYLIST_NEXT');
          state.playlistVideo = state.playlist[state.playlist.length - 1];
-      }
+      },
+		FAVORITE_ADD(state, video) {
+			console.log('FAVORITE_ADD');
+			state.favorites.push(video);
+		}
 	},
 	actions: {
       SIGNUP({commit}, data) {
@@ -173,5 +183,20 @@ export default new Vuex.Store({
          console.log(video)
          client.socket.emit('addToPlaylist', video);
 		},
+		ADD_TO_FAVORITES({state, commit}, video) {
+         return fetch('api/favorites', {
+            headers: new Headers({
+               'Authorization': state.token
+            }),
+            method: 'post',
+            body: JSON.stringify(video)
+         }).then(data => {
+            console.log('ADD_TO_FAVORITES SUCCESS');
+            commit('FAVORITE_ADD', video);
+         }).catch(err => {
+            console.log(err);
+            throw err;
+         });
+		}
 	},
 })

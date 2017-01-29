@@ -34,6 +34,7 @@ export default [
 		path: '/dashboard',
 		component: Dashboard,
 		meta: {auth: true},
+      redirect: '/dashboard/search',
       children: [
          {
             path: 'playlist',
