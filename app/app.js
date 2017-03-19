@@ -24,6 +24,8 @@ Vue.use(VueMaterial.MdIcon);
 Vue.use(VueMaterial.MdList);
 Vue.use(VueMaterial.MdBackdrop);
 Vue.use(VueMaterial.MdBottomBar);
+Vue.use(VueMaterial.MdButtonToggle);
+Vue.use(VueMaterial.MdAvatar);
 
 // config routes
 const router = new VueRouter({
@@ -34,6 +36,12 @@ const router = new VueRouter({
 
 // authentification route middleware
 router.beforeEach(authMiddleware);
+
+// store route path on enter
+router.afterEach((to, from) => {
+   store.state.path = to.path;
+});
+
 
 // mount a root Vue instance
 new Vue({

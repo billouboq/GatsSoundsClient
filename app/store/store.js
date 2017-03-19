@@ -17,20 +17,16 @@ export default new Vuex.Store({
       self: {},
 
       // search
-      searchVideos: [],
+      searchVideos: null,
       searchQuery: '',
       searchNextPageToken: '',
       searchLoading: false,
 
-      // video
-      selectedVideo: {},
-
       // playlist
-      playlistVideo: {},
-      playlist: [],
+      playlist: null,
 
 		// favorites
-		favorites: []
+		favorites: null
 	},
 	mutations: {
 		LOGIN_SUCCESS(state, {user, token}) {
@@ -48,6 +44,7 @@ export default new Vuex.Store({
 			state.isAuth = false;
 		},
       SEARCH_LOADING(state) {
+         console.log('SEARCH_LOADING')
          state.searchLoading = true;
       },
 		SEARCH_VIDEO_SUCCESS(state, {query, nextPageToken, videos}) {
@@ -63,8 +60,8 @@ export default new Vuex.Store({
          state.searchNextPageToken = '';
       },
 		SEARCH_VIDEO_RESET(state) {
-         console.log('SEARCH VIDEO ERROR');
-         state.searchVideos = [];
+         console.log('SEARCH VIDEO RESET');
+         state.searchVideos = null;
 	      state.searchQuery = '';
 	      state.searchNextPageToken = '';
 	      state.searchLoading = false;
@@ -80,26 +77,36 @@ export default new Vuex.Store({
          state.searchLoading = false;
          state.searchNextPageToken = '';
 		},
-      SELECT_VIDEO(state, video) {
-         console.log('SELECT_VIDEO');
-         state.selectedVideo = video;
-      },
       PLAYLIST_ADD(state, video) {
          console.log('PLAYLIST_ADD');
-         state.playlist.push(video);
-         // no video in playlist
-         if (!state.playlistVideo.id) {
-            console.log('in playlistvideo');
-            state.playlistVideo = video;
+         if (!state.playlist) {
+            state.playlist = [video];
+         } else {
+            state.playlist.push(video);
          }
       },
       PLAYLIST_NEXT(state) {
          console.log('PLAYLIST_NEXT');
-         state.playlistVideo = state.playlist[state.playlist.length - 1];
+         state.playlist.pop();
       },
 		FAVORITE_ADD(state, video) {
+         console.log(video);
 			console.log('FAVORITE_ADD');
-			state.favorites.push(video);
+         if (!state.favorites) {
+            state.favorites = [video];
+         } else {
+            state.favorites.push(video);
+         }
+		},
+      FAVORITE_REMOVE(state, id) {
+         console.log('FAVORITE_REMOVE');
+         if (state.favorites) {
+            state.favorites = state.favorites.filter(fav => fav.id !== id);
+         }
+		},
+      FAVORITE_SET(state, favorites) {
+			console.log('FAVORITE_SET');
+			state.favorites = favorites
 		}
 	},
 	actions: {
@@ -136,11 +143,12 @@ export default new Vuex.Store({
             throw err;
 			});
 		},
-		SEARCH_VIDEO({commit}, query) {
+		SEARCH_VIDEO({state, commit}, query) {
          commit('SEARCH_LOADING');
          return youtube.listVideo(query)
             .then(data => {
                if (data.items && data.items.length) {
+                  addFavoriteProperty(data.items, state.favorites);
                   commit('SEARCH_VIDEO_SUCCESS', {
                      query: query,
                      nextPageToken: data.nextPageToken,
@@ -155,7 +163,7 @@ export default new Vuex.Store({
                throw err;
             });
 		},
-      SEARCH_NEXT_VIDEO({commit, state}) {
+      SEARCH_NEXT_VIDEO({state, commit}) {
          return new Promise((resolve, reject) => {
             if (!state.searchNextPageToken) {
                return reject();
@@ -164,6 +172,7 @@ export default new Vuex.Store({
             return youtube.listNextVideo(state.searchQuery, state.searchNextPageToken)
                .then(data => {
                   if (data.items && data.items.length) {
+							addFavoriteProperty(data.items, state.favorites);
                      commit('SEARCH_NEXT_VIDEO_SUCCESS', {
                         nextPageToken: data.nextPageToken,
                         videos: data.items,
@@ -180,23 +189,59 @@ export default new Vuex.Store({
 		},
       ADD_TO_PLAYLIST({commit, state}, video) {
          console.log('ADD TO PLAYLIST');
-         console.log(video)
          client.socket.emit('addToPlaylist', video);
 		},
+      GET_FAVORITES({state, commit}) {
+			return fetch('api/favorites', {
+				headers: new Headers({'Authorization': state.token}),
+				method: 'get'
+			}).then(data => {
+				console.log('GET_FAVORITES');
+            commit('FAVORITE_SET', data);
+			}).catch(err => {
+				console.log(err);
+				throw err;
+			});
+      },
 		ADD_TO_FAVORITES({state, commit}, video) {
          return fetch('api/favorites', {
-            headers: new Headers({
-               'Authorization': state.token
-            }),
-            method: 'post',
+				headers: new Headers({'Authorization': state.token}),
+				method: 'post',
             body: JSON.stringify(video)
-         }).then(data => {
-            console.log('ADD_TO_FAVORITES SUCCESS');
-            commit('FAVORITE_ADD', video);
-         }).catch(err => {
-            console.log(err);
-            throw err;
-         });
+			}).then(data => {
+				console.log('ADD_TO_FAVORITES SUCCESS');
+				commit('FAVORITE_ADD', video);
+			}).catch(err => {
+				console.log(err);
+				throw err;
+			});
+		},
+		REMOVE_FROM_FAVORITES({state, commit}, video) {
+			return fetch('api/favorites/' + video.id, {
+				headers: new Headers({'Authorization': state.token}),
+				method: 'delete',
+			}).then(data => {
+				console.log('ADD_TO_FAVORITES SUCCESS');
+				commit('FAVORITE_REMOVE', video.id);
+			}).catch(err => {
+				console.log(err);
+				throw err;
+			});
 		}
 	},
-})
+});
+
+function addFavoriteProperty(videos, favorites) {
+   if (favorites) {
+      videos.forEach(video => {
+         let fav = false;
+         for (let i = 0; i < favorites.length; i++) {
+            const favorite = favorites[i];
+            if (favorite.id === video.id) {
+               fav = true;
+            }
+         }
+         video.favorite = fav;
+      });
+   }
+}

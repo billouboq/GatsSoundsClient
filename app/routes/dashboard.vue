@@ -1,30 +1,29 @@
 <template>
 <div class="dashboard">
-   <searchBar></searchBar>
+   <topbar></topbar>
    <!--<playlistVideo></playlistVideo>-->
 
    <div class="content">
       <router-view></router-view>
    </div>
 
-   <bottomBar></bottomBar>
 </div>
 </template>
 
 <script>
-import searchBar from '../components/searchBar.vue';
+import topbar from '../components/topbar.vue';
 import playlistVideo from '../components/playlistVideo.vue';
-import bottomBar from '../components/bottomBar.vue';
 import storeSocket from '../store/store-socket';
 
 export default {
    mounted() {
       // init store-socket
       storeSocket();
+      // get favorites
+      this.$store.dispatch('GET_FAVORITES');
    },
    components: {
-      bottomBar,
-      searchBar,
+      topbar,
       playlistVideo
    },
 }
@@ -42,6 +41,6 @@ export default {
 .content {
    min-height: 100%;
    background-color: $backgroundColor;
-   padding: #{$padding + $barHeight}px #{$padding}px #{$padding + $barHeight}px #{$padding}px;
+   padding: #{$padding + $barHeight}px #{$padding}px #{$padding}px #{$padding}px;
 }
 </style>

@@ -2,14 +2,15 @@
 
 import config from '../config';
 
-export default (url, options) => {
+const httpRegex = /^http|https/;
 
-	const uri = /^http|https/.test(url)
-      ? url
-      : config.server.url + url;
+export default (url, options = {}) => {
+
+   // default url is config.server.url + url
+	const uri = httpRegex.test(url) ? url : config.server.url + url;
 
    // set correct header
-   if (options && options.method.toLowerCase() === 'post') {
+   if (options.method && (options.method.toLowerCase() === 'post' || options.method.toLowerCase() === 'put')) {
       if (options.headers && !options.headers.has('Content-Type')) {
          options.headers.set('Content-Type', 'application/json');
       } else {

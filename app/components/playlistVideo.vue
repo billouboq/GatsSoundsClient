@@ -30,7 +30,7 @@ export default {
    z-index: 1000
 }
 .video {
-   position: absolute;;
+   position: absolute;
    bottom: 25px;
    left: 25px;
    width: 40%;
