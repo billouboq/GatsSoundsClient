@@ -1,22 +1,23 @@
 <template>
-<div class="topbar">
+<div class="top-bar">
    <div class="left-side">
       <md-icon class="toolbar-icon">search</md-icon>
       <input class="toolbar-input" placeholder="Search" type="text" v-model="searchQuery" @keyup.enter="research()"></input>
    </div>
    <div class="right-side">
-      <md-button class="md-icon-button" @click.native="$router.push('/dashboard/search')">
+      <md-button class="md-icon-button" @click.native="$router.push('/search')">
          <md-icon>search</md-icon>
       </md-button>
 
-      <md-button class="md-icon-button" @click.native="$router.push('/dashboard/playlist')">
+      <md-button class="md-icon-button" @click.native="$router.push('/playlist')">
          <md-icon>video_library</md-icon>
       </md-button>
 
-      <md-button class="md-icon-button" @click.native="$router.push('/dashboard/favorite')">
-         <md-icon>stars</md-icon>
+      <md-button class="md-icon-button">
+         <md-icon md-theme="green" class="icon-connected" v-if="connected">check_circle</md-icon>
+         <md-icon md-theme="red" class="icon-disconnected" v-else>warning</md-icon>
       </md-button>
-      </md-button-toggle>
+
    </div>
 </div>
 </template>
@@ -28,28 +29,31 @@ export default {
          searchQuery: ''
       }
    },
+   computed: {
+      connected() {
+         return this.$store.state.connected;
+      }
+   },
    methods: {
       research() {
          if (this.searchQuery) {
-            this.$store.dispatch('SEARCH_VIDEO', this.searchQuery)
-               .then(() => {
-                  this.$router.push('/dashboard/search');
-               });
+            this.$store.dispatch('SEARCH_VIDEO', this.searchQuery).then(() => {
+               this.$router.push('/search');
+            });
          }
       },
    },
 }
 </script>
 
-<style lang="scss" scoped>@import "~sass/variables.scss";
-
-.topbar {
+<style lang="scss" scoped>
+.top-bar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    height: $barHeight + px;
-    padding: 0 $padding + px;
+    height: 60px;
+    padding: 0 18px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -74,7 +78,6 @@ export default {
 .toolbar-icon {
     color: #a9a9a9;
 }
-// transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 
 .toolbar-input {
     font-size: 20px;

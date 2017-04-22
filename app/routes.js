@@ -1,53 +1,33 @@
 'use strict';
 
-import store from './store/store';
+import Vue from 'vue';
+import VueRouter from 'vue-router';
 
-import Signin from './routes/signin.vue'
-import Signup from './routes/signup.vue'
-import Dashboard from './routes/dashboard.vue'
-import Search from './routes/dashboard/search.vue';
-import Favorite from './routes/dashboard/favorite.vue';
-import Playlist from './routes/dashboard/playlist.vue';
+import Base from './routes/base.vue'
+import Search from './routes/search.vue';
+import Playlist from './routes/playlist.vue';
 
-export default [
-   {
+Vue.use(VueRouter);
+
+// config routes
+const router = new VueRouter({
+	base: __dirname,
+	mode: 'history',
+	routes: [{
 		path: '/',
-		redirect: '/signin'
-	},
-	{
-		path: '/signin',
-		component: Signin
-	},
-	{
-		path: '/signup',
-		component: Signup
-	},
-	{
-		path: '/logout',
-		meta: {auth: true},
-		beforeEnter(to, from, next) {
-			store.commit('LOGIN_ERROR');
-			next('signin');
-		}
-	},
-	{
-		path: '/dashboard',
-		component: Dashboard,
-		meta: {auth: true},
-      redirect: '/dashboard/search',
-      children: [
+		component: Base,
+		redirect: '/search',
+		children: [
          {
-            path: 'playlist',
-            component: Playlist
-         },
-         {
-            path: 'search',
-            component: Search
-         },
-         {
-            path: 'favorite',
-            component: Favorite
-         }
-      ]
-	}
-]
+				path: 'playlist',
+				component: Playlist
+			},
+			{
+				path: 'search',
+				component: Search
+			}
+		]
+	}]
+});
+
+export default	router;

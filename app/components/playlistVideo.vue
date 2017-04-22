@@ -1,6 +1,6 @@
 <template>
-<div class="playlist-video">
-   <youtube class="video" :video-id="playlistVideo.id"></youtube>
+<div class="playlist-video" v-if="playlist.length">
+   <youtube class="video" :video-id="playlist[0].id"></youtube>
 </div>
 </template>
 
@@ -11,15 +11,14 @@ export default {
       }
    },
    computed: {
-      playlistVideo() {
-         return this.$store.state.playlistVideo;
+      playlist() {
+         return this.$store.state.playlist;
       },
    },
 }
 </script>
 
 <style lang="scss" scoped>
-@import "~sass/variables.scss";
 .playlist-video {
    position: fixed;
    top: 0;
