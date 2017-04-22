@@ -1,6 +1,6 @@
 <template>
 <div class="dashboard">
-   <topbar></topbar>
+   <top-bar></top-bar>
    <playlistVideo></playlistVideo>
 
    <div class="content">
@@ -13,8 +13,8 @@
 
 <script>
 import io from 'socket.io-client';
-import topBar from '../components/bottom-bar.vue';
-import bottomBar from '../components/top-bar.vue';
+import bottomBar from '../components/bottom-bar.vue';
+import topBar from '../components/top-bar.vue';
 import playlistVideo from '../components/playlistVideo.vue';
 
 export default {
@@ -32,8 +32,21 @@ export default {
          this.$store.commit('CONNECTION_ERROR');
       });
 
-      this.$socket.on('addToPlaylist', ({video, play}) => {
-         this.$store.dispatch('ADD_TO_PLAYLIST', video);
+      this.$socket.on('addToPlaylist', (video) => {
+         this.$store.commit('PLAYLIST_ADD', video);
+      });
+
+      this.$socket.on('pauseVideo', () => {
+         this.$store.commit('PAUSE_VIDEO');
+      });
+
+      this.$socket.on('unpauseVideo', () => {
+         this.$store.commit('UNPAUSE_VIDEO');
+      });
+
+      this.$socket.on('nextVideo', () => {
+         console.log('next video');
+         this.$store.commit('PLAYLIST_NEXT');
       });
    },
    components: {
@@ -47,16 +60,13 @@ export default {
 <style lang="scss">
 
 .dashboard {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
 }
 .content {
    height: 100%;
-   overflow: auto;
    background-color: #F6F6F6;
-   padding: 78px 18px 18px 18px;
 }
 </style>

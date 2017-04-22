@@ -14,14 +14,11 @@ Vue.use(infiniteScroll)
 Vue.use(VueMaterial.MdCore);
 Vue.use(VueMaterial.MdCard);
 Vue.use(VueMaterial.MdMenu);
-Vue.use(VueMaterial.MdWhiteframe);
 Vue.use(VueMaterial.MdInputContainer);
 Vue.use(VueMaterial.MdButton);
 Vue.use(VueMaterial.MdIcon);
 Vue.use(VueMaterial.MdList);
-Vue.use(VueMaterial.MdBackdrop);
 Vue.use(VueMaterial.MdBottomBar);
-Vue.use(VueMaterial.MdButtonToggle);
 Vue.use(VueMaterial.MdAvatar);
 
 // mount a root Vue instance

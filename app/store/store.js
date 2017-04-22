@@ -19,7 +19,17 @@ export default new Vuex.Store({
 
       // playlist
       playlist: [],
+
+      // video
+      showVideo: false,
+      videoPaused: false,
+      videoMuted: false,
 	},
+   getters: {
+      currentVideo(state) {
+         return state.playlist[0];
+      }
+   },
 	mutations: {
       CONNECTION_SUCCESS(state) {
          state.connected = true;
@@ -27,47 +37,57 @@ export default new Vuex.Store({
       CONNECTION_ERROR(state) {
          state.connected = false;
       },
+      SHOW_VIDEO(state) {
+         state.showVideo = true;
+      },
+      HIDE_VIDEO(state) {
+         state.showVideo = false;
+      },
+      PAUSE_VIDEO(state) {
+         state.videoPaused = true;
+      },
+      UNPAUSE_VIDEO(state) {
+         state.videoPaused = false;
+      },
+      MUTE_VIDEO(state) {
+         state.videoMuted = true;
+      },
+      UNMUTE_VIDEO(state) {
+         state.videoMuted = false;
+      },
       SEARCH_LOADING(state) {
-         console.log('SEARCH_LOADING')
          state.searchLoading = true;
       },
 		SEARCH_VIDEO_SUCCESS(state, {query, nextPageToken, videos}) {
-			console.log('SEARCH VIDEO SUCCESS');
          state.searchNextPageToken = nextPageToken;
          state.searchQuery = query;
          state.searchVideos = videos;
          state.searchLoading = false;
 		},
       SEARCH_VIDEO_ERROR(state) {
-         console.log('SEARCH VIDEO ERROR');
          state.searchLoading = false;
          state.searchNextPageToken = '';
       },
 		SEARCH_VIDEO_RESET(state) {
-         console.log('SEARCH VIDEO RESET');
          state.searchVideos = null;
 	      state.searchQuery = '';
 	      state.searchNextPageToken = '';
 	      state.searchLoading = false;
       },
       SEARCH_NEXT_VIDEO_SUCCESS(state, {nextPageToken, videos}) {
-         console.log('SEARCH NEXT VIDEO SUCCESS');
          state.searchNextPageToken = nextPageToken;
          videos.forEach(video => state.searchVideos.push(video));
          state.searchLoading = false;
 		},
       SEARCH_NEXT_VIDEO_ERROR(state) {
-         console.log('SEARCH NEXT VIDEO ERROR');
          state.searchLoading = false;
          state.searchNextPageToken = '';
 		},
       PLAYLIST_ADD(state, video) {
-         console.log('PLAYLIST_ADD');
          state.playlist.push(video);
       },
       PLAYLIST_NEXT(state) {
-         console.log('PLAYLIST_NEXT');
-         state.playlist.pop();
+         state.playlist.shift();
       },
 	},
 	actions: {

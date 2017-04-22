@@ -20,6 +20,7 @@
             </md-button>
          </md-card-actions>
       </md-card>
+
       <div class="loader" v-show="searchLoading"></div>
    </div>
 </template>
@@ -47,6 +48,7 @@ export default {
 
 <style lang="scss" scoped>
 .videoList {
+    padding: 78px 18px;
     width: 100%;
     display: flex;
     justify-content: space-between;
