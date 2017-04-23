@@ -16,8 +16,7 @@ function listVideo(query, limit = config.video.limit) {
 	return fetch(url)
 		.then(getVideoData)
 		.then(getChannelData)
-		.then(format)
-		.catch(onError);
+		.then(format);
 }
 
 function listNextVideo(query, next, limit = config.video.limit) {
@@ -25,8 +24,7 @@ function listNextVideo(query, next, limit = config.video.limit) {
 	return fetch(url)
 		.then(getVideoData)
 		.then(getChannelData)
-		.then(format)
-		.catch(onError);
+		.then(format);
 }
 
 function getVideoData(data) {
@@ -53,8 +51,7 @@ function getChannelData(data) {
 				data.items[index].snippet.channelThumbnail = item.snippet.thumbnails.default.url;
 			});
 			return data;
-		})
-		.catch(onError);
+		});
 }
 
 function format(data) {
@@ -85,8 +82,4 @@ function YTDurationToSeconds(duration) {
 	const minutes = (parseInt(match[2]) || 0);
 	const seconds = (parseInt(match[3]) || 0);
 	return hours * 3600 + minutes * 60 + seconds;
-}
-
-function onError(err) {
-   throw err;
 }

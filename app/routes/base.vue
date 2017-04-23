@@ -18,11 +18,6 @@ import topBar from '../components/top-bar.vue';
 import playlistVideo from '../components/playlistVideo.vue';
 
 export default {
-   data() {
-      return {
-         isConnected: false
-      }
-   },
    mounted() {
       this.$socket.on('connect', () => {
          this.$store.commit('CONNECTION_SUCCESS');
@@ -45,28 +40,27 @@ export default {
       });
 
       this.$socket.on('nextVideo', () => {
-         console.log('next video');
          this.$store.commit('PLAYLIST_NEXT');
       });
    },
    components: {
       topBar,
       bottomBar,
-      playlistVideo
+      playlistVideo,
    },
 }
 </script>
 
 <style lang="scss">
-
 .dashboard {
     position: relative;
     width: 100%;
     height: 100%;
     overflow: auto;
 }
+
 .content {
-   height: 100%;
+   min-height: 100%;
    background-color: #F6F6F6;
 }
 </style>
